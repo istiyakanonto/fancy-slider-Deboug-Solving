@@ -15,14 +15,18 @@ const KEY = '15674931-a9d714b6e9d654524df198e00&q';
 
 // show images 
 
+  const getImages = (query) => {
+    toggleSpinner(true)
+    fetch(`https://pixabay.com/api/?key=${KEY}=${query}&image_type=photo&pretty=true`)
+      .then(response => response.json())
+      //.then(data => console.log(data))
+ .then(data => showImages(data.hits))// Problem solve 1
+      .catch(err => console.log(err))
+  }
 
-const getImages = (query) => {
-  toggleSpinner(true)
-  fetch(`https://pixabay.com/api/?key=${KEY}=${query}&image_type=photo&pretty=true`)
-    .then(response => response.json())
-    .then(data => showImages(data.hits))// Problem solve 1
-    .catch(err => console.log(err))
-}
+
+
+
 
 
 const showImages = (images) => {
@@ -33,7 +37,9 @@ const showImages = (images) => {
   images.forEach(image => {
     let div = document.createElement('div');
     div.className = 'col-lg-3 col-md-4 col-xs-6 img-item mb-2';
-    div.innerHTML = ` <img class="img-fluid img-thumbnail" onclick=selectItem(event,"${image.webformatURL}") src="${image.webformatURL}" alt="${image.tags}">`;
+    div.innerHTML = ` <img class="img-fluid img-thumbnail" onclick=selectItem(event,"${image.webformatURL}") src="${image.webformatURL}" alt="${image.tags}">
+    <button id="button-control" onclick="displayDtls('${image.tags}')">Image Content</button>`;
+    
     gallery.appendChild(div)
     toggleSpinner(false)
   })
@@ -51,9 +57,10 @@ const selectItem = (event, img) => {
   if (item === -1) {
     sliders.push(img);
   } else {
-    element.classList.remove('added');// problem solve 5
+    element.classList.remove('added');
+}// problem solve 5
   }
-}
+  
 var timer
 const createSlider = () => {
   // check slider image length
@@ -167,4 +174,14 @@ const toggleSpinner=(show)=>
       loadingSpinner.classList.add('d-none');// improvement 1;
     }
     
+}
+const displayDtls=tag=>
+{
+  
+ document.getElementById('control-display').style.display='none';
+const div=document.getElementById('full-info')
+  const item=document.createElement('h1')
+  item.innerText= 'Your picture content are : '+ tag;
+  div.appendChild(item)
+  
 }
