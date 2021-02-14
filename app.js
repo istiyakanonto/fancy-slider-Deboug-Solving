@@ -6,29 +6,19 @@ const sliderBtn = document.getElementById('create-slider');
 const sliderContainer = document.getElementById('sliders');
 // selected image 
 let sliders = [];
-
-
 // If this key doesn't work
 // Find the name in the url and go to their website
 // to create your own api key
 const KEY = '15674931-a9d714b6e9d654524df198e00&q';
-
 // show images 
-
-  const getImages = (query) => {
-    toggleSpinner(true)
-    fetch(`https://pixabay.com/api/?key=${KEY}=${query}&image_type=photo&pretty=true`)
-      .then(response => response.json())
-      //.then(data => console.log(data))
- .then(data => showImages(data.hits))// Problem solve 1
-      .catch(err => console.log(err))
-  }
-
-
-
-
-
-
+const getImages = (query) => {
+  toggleSpinner(true)
+  fetch(`https://pixabay.com/api/?key=${KEY}=${query}&image_type=photo&pretty=true`)
+    .then(response => response.json())
+    //.then(data => console.log(data))
+    .then(data => showImages(data.hits))// Problem solve 1
+    .catch(err => console.log(err))
+}
 const showImages = (images) => {
   imagesArea.style.display = 'block';
   gallery.innerHTML = '';
@@ -39,28 +29,22 @@ const showImages = (images) => {
     div.className = 'col-lg-3 col-md-4 col-xs-6 img-item mb-2';
     div.innerHTML = ` <img class="img-fluid img-thumbnail" onclick=selectItem(event,"${image.webformatURL}") src="${image.webformatURL}" alt="${image.tags}">
     <button id="button-control" onclick="displayDtls('${image.tags}')">Image Content</button>`;
-    
     gallery.appendChild(div)
     toggleSpinner(false)
   })
-
 }
-
 let slideIndex = 0;
 const selectItem = (event, img) => {
-  
   let element = event.target;
-  
   element.classList.add('added');
- 
   let item = sliders.indexOf(img);
   if (item === -1) {
     sliders.push(img);
   } else {
     element.classList.remove('added');
-}// problem solve 5
-  }
-  
+  }// problem solve 5
+}
+
 var timer
 const createSlider = () => {
   // check slider image length
@@ -68,7 +52,6 @@ const createSlider = () => {
     alert('Select at least 2 image.')
     return;
   }
- 
   // crate slider previous next area
   sliderContainer.innerHTML = '';
   const prevNext = document.createElement('div');
@@ -77,18 +60,16 @@ const createSlider = () => {
   <span class="prev" onclick="changeItem(-1)"><i class="fas fa-chevron-left"></i></span>
   <span class="next" onclick="changeItem(1)"><i class="fas fa-chevron-right"></i></span>
   `;
-
   sliderContainer.appendChild(prevNext)
   document.querySelector('.main').style.display = 'block';
   // hide image aria
   imagesArea.style.display = 'none';
   const duration = document.getElementById('doration').value || 1000;// problem  solve 2
   // try to solve problem 3//
-  if(duration<1000)
-  {
+  if (duration < 1000) {
     alert("Your eyes are not strong enough for watching it");
   }
-  else{
+  else {
     sliders.forEach(slide => {
       let item = document.createElement('div')
       item.className = "slider-item";
@@ -98,41 +79,32 @@ const createSlider = () => {
       sliderContainer.appendChild(item)
     })
   }
-
-  
   changeSlide(0)
   timer = setInterval(function () {
     slideIndex++;
     changeSlide(slideIndex);
   }, duration);
 }
-
 // change slider index 
 const changeItem = index => {
   changeSlide(slideIndex += index);
 }
-
 // change slide item
 const changeSlide = (index) => {
-
   const items = document.querySelectorAll('.slider-item');
   if (index < 0) {
     slideIndex = items.length - 1
     index = slideIndex;
   };
-
   if (index >= items.length) {
     index = 0;
     slideIndex = 0;
   }
-
   items.forEach(item => {
     item.style.display = "none"
   })
-
   items[index].style.display = "block"
 }
-
 searchBtn.addEventListener('click', function () {
   document.querySelector('.main').style.display = 'none';
   clearInterval(timer);
@@ -140,48 +112,33 @@ searchBtn.addEventListener('click', function () {
   getImages(search.value)
   sliders.length = 0;
 })
-
 sliderBtn.addEventListener('click', function () {
   createSlider()
 })
-
-
-document.getElementById('search').addEventListener('keypress',function(event){
- 
-   if(event.key==='Enter')
-   {
-       document.getElementById('search-btn').click();// add KeyPress for search input box+solve 4
-   }
+document.getElementById('search').addEventListener('keypress', function (event) {
+  if (event.key === 'Enter') {
+    document.getElementById('search-btn').click();//solve problem 4 (KeyPress for search input box)
+  }
 })
-
-
-document.getElementById('doration').addEventListener('keypress',function(event){
- 
-   if(event.key==='Enter')
-   {
-       document.getElementById('create-slider').click();// add KeyPress for time input box
-   }
+document.getElementById('doration').addEventListener('keypress', function (event) {
+  if (event.key === 'Enter') {
+    document.getElementById('create-slider').click();// add KeyPress for time input box
+  }
 })
-
-const toggleSpinner=(show)=>
-{
-    const loadingSpinner=document.getElementById('loading-spinner');
-    if(show){
-      loadingSpinner.classList.remove('d-none');
-    }
-    else
-    {
-      loadingSpinner.classList.add('d-none');// improvement 1;
-    }
-    
+const toggleSpinner = (show) => {
+  const loadingSpinner = document.getElementById('loading-spinner');
+  if (show) {
+    loadingSpinner.classList.remove('d-none');
+  }
+  else {
+    loadingSpinner.classList.add('d-none');// improvement 1(Add spinner In data loading time);
+  }
 }
-const displayDtls=tag=>
+const displayDtls = tag => //Improvement 2(Add button which gives the full content of this Images)
 {
-  
- document.getElementById('control-display').style.display='none';
-const div=document.getElementById('full-info')
-  const item=document.createElement('h1')
-  item.innerText= 'Your picture content are : '+ tag;
+  document.getElementById('control-display').style.display = 'none';
+  const div = document.getElementById('full-info')
+  const item = document.createElement('h1')
+  item.innerText = 'Your picture content are : ' + tag;
   div.appendChild(item)
-  
 }
